@@ -5,11 +5,10 @@
         "noImplicitAny": false,
         "noUnusedLocals": false,
         "strictNullChecks": true,
-        "moduleResolution": "node",
-        "module": "commonjs",
+        "moduleResolution": "bundler",
+        "module": "esnext",
         "target": "es2015",
         "sourceMap": true,
-        "downlevelIteration": false,
         "lib": []
     }
 }

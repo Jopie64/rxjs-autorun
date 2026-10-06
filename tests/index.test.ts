@@ -54,8 +54,8 @@ describe('autorun', () => {
         const r = computed(() => _(o));
         sub = r.subscribe(observer);
         o.next('test');
-        expect(observer.next).toBeCalledWith('test');
-        expect(observer.complete).toBeCalled();
+        expect(observer.next).toHaveBeenCalledWith('test');
+        expect(observer.complete).toHaveBeenCalled();
     });
 
     test('Dependant runners', () => {
@@ -149,13 +149,13 @@ describe('autorun', () => {
             const r = computed(() => $(o) + $(o2));
             sub = r.subscribe(observer);
 
-            expect(observer.next).toBeCalledWith(3);
+            expect(observer.next).toHaveBeenCalledWith(3);
             expect(observer.complete).not.toHaveBeenCalled();
 
             // 1 of 2 completes. Result doesn't complete.
             o2.complete();
             o.next(3);
-            expect(observer.next).toBeCalledWith(5);
+            expect(observer.next).toHaveBeenCalledWith(5);
             expect(observer.complete).not.toHaveBeenCalled();
 
             // Both deps completed. Result completes as well.
@@ -169,7 +169,7 @@ describe('autorun', () => {
             const r = computed(() => $(o) + _(o2));
             sub = r.subscribe(observer);
 
-            expect(observer.next).toBeCalledWith(3);
+            expect(observer.next).toHaveBeenCalledWith(3);
             expect(observer.complete).not.toHaveBeenCalled();
 
             // The only tracked dep completes, so result completes
@@ -183,7 +183,7 @@ describe('autorun', () => {
             const r = computed(() => _(o) + _(o2));
             sub = r.subscribe(observer);
 
-            expect(observer.next).toBeCalledWith(3);
+            expect(observer.next).toHaveBeenCalledWith(3);
             expect(observer.complete).toHaveBeenCalled();
         });
 
@@ -193,11 +193,11 @@ describe('autorun', () => {
             const r = computed(() => $(o) + ++runCount);
             sub = r.subscribe(observer);
 
-            expect(observer.next).toBeCalledWith(2);
+            expect(observer.next).toHaveBeenCalledWith(2);
             expect(runCount).toEqual(1);
 
             o.complete();
-            expect(observer.next).toBeCalledWith(2);
+            expect(observer.next).toHaveBeenCalledWith(2);
             expect(runCount).toEqual(1);
         });
 
@@ -207,7 +207,7 @@ describe('autorun', () => {
             const r = computed(() => $(o) + $(o2));
             sub = r.subscribe(observer);
 
-            expect(observer.next).toBeCalledWith(3);
+            expect(observer.next).toHaveBeenCalledWith(3);
             expect(observer.complete).toHaveBeenCalled();
         });
     });
@@ -219,7 +219,7 @@ describe('autorun', () => {
             const r = computed(() => $(o) + $(o2));
             sub = r.subscribe(observer);
 
-            expect(observer.next).toBeCalledWith(3);
+            expect(observer.next).toHaveBeenCalledWith(3);
             expect(observer.error).not.toHaveBeenCalled();
 
             o2.error('Some failure');
@@ -231,7 +231,7 @@ describe('autorun', () => {
             const r = computed(() => $(o));
             sub = r.subscribe(observer);
 
-            expect(observer.next).toBeCalledWith(1);
+            expect(observer.next).toHaveBeenCalledWith(1);
             expect(observer.error).not.toHaveBeenCalled();
 
             o.error(void 0);
@@ -244,7 +244,7 @@ describe('autorun', () => {
             const r = computed(() => $(o) + _(o2));
             sub = r.subscribe(observer);
 
-            expect(observer.next).toBeCalledWith(3);
+            expect(observer.next).toHaveBeenCalledWith(3);
             expect(observer.error).not.toHaveBeenCalled();
 
             // Untracked observer errors out
@@ -258,7 +258,7 @@ describe('autorun', () => {
             const r = computed(() => $(o) + $(o2));
             sub = r.subscribe(observer);
 
-            expect(observer.next).not.toBeCalled();
+            expect(observer.next).not.toHaveBeenCalled();
             expect(observer.error).toHaveBeenCalledWith('Byebye');
         });
     });
@@ -282,28 +282,28 @@ describe('autorun', () => {
 
             sub = new Subscription();
             sub.add(r.subscribe(observer));
-            expect(observer.next).toBeCalledWith(3);
+            expect(observer.next).toHaveBeenCalledWith(3);
             expect(observer2.next).not.toHaveBeenCalled();
 
             o.next(3);
-            expect(observer.next).toBeCalledWith(5);
-            expect(observer.next).toBeCalledTimes(2);
+            expect(observer.next).toHaveBeenCalledWith(5);
+            expect(observer.next).toHaveBeenCalledTimes(2);
             expect(observer2.next).not.toHaveBeenCalled();
 
             sub.add(r.subscribe(observer2));
-            expect(observer.next).toBeCalledWith(5);
-            expect(observer.next).toBeCalledTimes(2);
+            expect(observer.next).toHaveBeenCalledWith(5);
+            expect(observer.next).toHaveBeenCalledTimes(2);
             expect(observer.complete).not.toHaveBeenCalled();
-            expect(observer2.next).toBeCalledWith(5);
-            expect(observer2.next).toBeCalledTimes(1);
+            expect(observer2.next).toHaveBeenCalledWith(5);
+            expect(observer2.next).toHaveBeenCalledTimes(1);
             expect(observer2.complete).not.toHaveBeenCalled();
 
             o.complete();
-            expect(observer.next).toBeCalledWith(5);
-            expect(observer.next).toBeCalledTimes(2);
+            expect(observer.next).toHaveBeenCalledWith(5);
+            expect(observer.next).toHaveBeenCalledTimes(2);
             expect(observer.complete).toHaveBeenCalled();
-            expect(observer2.next).toBeCalledWith(5);
-            expect(observer2.next).toBeCalledTimes(1);
+            expect(observer2.next).toHaveBeenCalledWith(5);
+            expect(observer2.next).toHaveBeenCalledTimes(1);
             expect(observer2.complete).toHaveBeenCalled();
         });
 
@@ -315,10 +315,10 @@ describe('autorun', () => {
 
             sub = new Subscription();
             sub.add(r.subscribe(observer));
-            expect(observer.next).toBeCalledWith(1);
+            expect(observer.next).toHaveBeenCalledWith(1);
 
             sub.add(r.subscribe(observer2));
-            expect(observer2.next).toBeCalledWith(2);
+            expect(observer2.next).toHaveBeenCalledWith(2);
         });
 
         it('subscriptions complete independently', () => {
@@ -331,16 +331,16 @@ describe('autorun', () => {
             sub = new Subscription();
             sub.add(r.subscribe(observer));
             sub.add(r.subscribe(observer2));
-            expect(observer.complete).not.toBeCalled();
-            expect(observer2.complete).not.toBeCalled();
+            expect(observer.complete).not.toHaveBeenCalled();
+            expect(observer2.complete).not.toHaveBeenCalled();
 
             os[0].complete();
-            expect(observer.complete).toBeCalled();
-            expect(observer2.complete).not.toBeCalled();
+            expect(observer.complete).toHaveBeenCalled();
+            expect(observer2.complete).not.toHaveBeenCalled();
 
             os[1].complete();
-            expect(observer.complete).toBeCalled();
-            expect(observer2.complete).toBeCalled();
+            expect(observer.complete).toHaveBeenCalled();
+            expect(observer2.complete).toHaveBeenCalled();
         });
 
         it('subscriptions error out independently', () => {
@@ -353,16 +353,16 @@ describe('autorun', () => {
             sub = new Subscription();
             sub.add(r.subscribe(observer));
             sub.add(r.subscribe(observer2));
-            expect(observer.error).not.toBeCalled();
-            expect(observer2.error).not.toBeCalled();
+            expect(observer.error).not.toHaveBeenCalled();
+            expect(observer2.error).not.toHaveBeenCalled();
 
             os[0].error('First error');
-            expect(observer.error).toBeCalledWith('First error');
-            expect(observer2.error).not.toBeCalled();
+            expect(observer.error).toHaveBeenCalledWith('First error');
+            expect(observer2.error).not.toHaveBeenCalled();
 
             os[1].error('Second error');
-            expect(observer.error).toBeCalledWith('First error');
-            expect(observer2.error).toBeCalledWith('Second error');
+            expect(observer.error).toHaveBeenCalledWith('First error');
+            expect(observer2.error).toHaveBeenCalledWith('Second error');
         });
     });
 
@@ -381,27 +381,27 @@ describe('autorun', () => {
                 });
                 sub = r.subscribe(observer);
 
-                expect(observer.next).toBeCalledWith(2);
+                expect(observer.next).toHaveBeenCalledWith(2);
                 expect(counter).toEqual(1);
 
                 o2.next(3); // o2 is tracked, so new value expected
-                expect(observer.next).toBeCalledWith(3);
+                expect(observer.next).toHaveBeenCalledWith(3);
                 expect(counter).toEqual(2);
 
                 o.next(2); // o2 now becomes untracked cause o is even
-                expect(observer.next).toBeCalledWith(-1);
+                expect(observer.next).toHaveBeenCalledWith(-1);
                 expect(counter).toEqual(3);
 
                 o2.next(4); // o2 is not tracked, so no effect.
-                expect(observer.next).toBeCalledWith(-1);
+                expect(observer.next).toHaveBeenCalledWith(-1);
                 expect(counter).toEqual(3);
 
                 o.next(1); // o2 now becomes tracked again
-                expect(observer.next).toBeCalledWith(4);
+                expect(observer.next).toHaveBeenCalledWith(4);
                 expect(counter).toEqual(4);
 
                 o2.next(10); // o2 is tracked again, so new value expected
-                expect(observer.next).toBeCalledWith(10);
+                expect(observer.next).toHaveBeenCalledWith(10);
                 expect(counter).toEqual(5);
             });
 
@@ -422,12 +422,12 @@ describe('autorun', () => {
                 sub = r.subscribe(observer);
 
                 // o3 not subscribed yet. No problem.
-                expect(observer.next).toBeCalledWith(0); // -1 + 1
+                expect(observer.next).toHaveBeenCalledWith(0); // -1 + 1
                 expect(counter).toEqual(1);
 
                 // o2 is tracked
                 o2.next(2);
-                expect(observer.next).toBeCalledWith(1); // -1 + 2
+                expect(observer.next).toHaveBeenCalledWith(1); // -1 + 2
                 expect(counter).toEqual(2);
 
                 // Will start to observe late emitter o3 now.
@@ -435,23 +435,23 @@ describe('autorun', () => {
                 // o2 will be untracked now because its value change doesn't change
                 // the outcome of the expression.
                 o.next(1);
-                expect(observer.next).toBeCalledWith(1); // No change
+                expect(observer.next).toHaveBeenCalledWith(1); // No change
                 expect(counter).toEqual(3);
 
                 // o2 is not tracked so won't run the expression
                 o2.next(3);
-                expect(observer.next).toBeCalledWith(1); // No change
+                expect(observer.next).toHaveBeenCalledWith(1); // No change
                 expect(counter).toEqual(3); // Same as before
 
                 // o3 now has a value, so o2 will be tracked and it's new value (3)
                 // will be used.
                 o3.next(1);
-                expect(observer.next).toBeCalledWith(4); // 1 (o3) + 3 (o2)
+                expect(observer.next).toHaveBeenCalledWith(4); // 1 (o3) + 3 (o2)
                 expect(counter).toEqual(4);
 
                 // o2 is tracked again
                 o2.next(4);
-                expect(observer.next).toBeCalledWith(5); // 1 (o3) + 4 (o2)
+                expect(observer.next).toHaveBeenCalledWith(5); // 1 (o3) + 4 (o2)
                 expect(counter).toEqual(5);
             });
         });
@@ -487,19 +487,19 @@ describe('autorun', () => {
                 });
                 sub = r.subscribe(observer);
 
-                expect(observer.next).toBeCalledWith(1);
+                expect(observer.next).toHaveBeenCalledWith(1);
                 expect(counter).toEqual(1);
                 expect(isO2Subscribed).toBeTruthy();
 
                 // Becomes unused, so will be unsubscribed.
                 o.next(2);
-                expect(observer.next).toBeCalledWith(-1);
+                expect(observer.next).toHaveBeenCalledWith(-1);
                 expect(counter).toEqual(2);
                 expect(isO2Subscribed).toBeFalsy();
 
                 // Becomes used again, so will be subscribed.
                 o.next(1);
-                expect(observer.next).toBeCalledWith(1);
+                expect(observer.next).toHaveBeenCalledWith(1);
                 expect(counter).toEqual(3);
                 expect(isO2Subscribed).toBeTruthy();
             });
@@ -517,7 +517,7 @@ describe('autorun', () => {
                 sub = r.subscribe(observer);
 
                 // o3 not subscribed yet. No problem.
-                expect(observer.next).toBeCalledWith(0); // -1 + 1
+                expect(observer.next).toHaveBeenCalledWith(0); // -1 + 1
                 expect(counter).toEqual(1);
                 expect(isO2Subscribed).toBeTruthy();
 
@@ -526,27 +526,27 @@ describe('autorun', () => {
                 // unsubscribe an observable when it becomes (temporary)
                 // unreachable due to late subscription.
                 o.next(1);
-                expect(observer.next).toBeCalledWith(0); // No change
+                expect(observer.next).toHaveBeenCalledWith(0); // No change
                 expect(counter).toEqual(2);
                 expect(isO2Subscribed).toBeTruthy(); // Still subscribed
 
                 // But since a value change of o2, wouldn't currently have any
                 // effect, it temporarily isn't tracked.
                 o2_next(2);
-                expect(observer.next).toBeCalledWith(0); // No change
+                expect(observer.next).toHaveBeenCalledWith(0); // No change
                 expect(counter).toEqual(2); // also no change
                 expect(isO2Subscribed).toBeTruthy(); // Still subscribed
 
                 // o3 now has a value, so o2 will be tracked again. It's newly
                 // acquired value (2) will be used.
                 o3.next(1);
-                expect(observer.next).toBeCalledWith(3); // 1 (o3) + 2 (o2)
+                expect(observer.next).toHaveBeenCalledWith(3); // 1 (o3) + 2 (o2)
                 expect(counter).toEqual(3);
                 expect(isO2Subscribed).toBeTruthy();
 
                 // Will have effect now
                 o2_next(3);
-                expect(observer.next).toBeCalledWith(4); // 1 (o3) + 3 (o2)
+                expect(observer.next).toHaveBeenCalledWith(4); // 1 (o3) + 3 (o2)
                 expect(counter).toEqual(4); // changed again
                 expect(isO2Subscribed).toBeTruthy();
             });
@@ -564,7 +564,7 @@ describe('autorun', () => {
                 sub = r.subscribe(observer);
 
                 // o3 not subscribed yet. No problem.
-                expect(observer.next).toBeCalledWith(0); // -1 + 1
+                expect(observer.next).toHaveBeenCalledWith(0); // -1 + 1
                 expect(counter).toEqual(1);
                 expect(isO2Subscribed).toBeTruthy();
 
@@ -574,19 +574,19 @@ describe('autorun', () => {
                 // that this is OK, because a new value in o2 would not be able to
                 // change the outcome of the expression, so it becomes irrelevant.
                 o.next(1);
-                expect(observer.next).toBeCalledWith(0); // No change
+                expect(observer.next).toHaveBeenCalledWith(0); // No change
                 expect(counter).toEqual(2);
                 expect(isO2Subscribed).toBeFalsy(); // Is now unsubscribed
 
                 // Will abort again cause o3 still doesn't have a value
                 o.next(3);
-                expect(observer.next).toBeCalledWith(0); // No change
+                expect(observer.next).toHaveBeenCalledWith(0); // No change
                 expect(counter).toEqual(3);
                 expect(isO2Subscribed).toBeFalsy(); // Still unsubscribed
 
                 // o3 now has a value, so o2 will be subscribed again
                 o3.next(1);
-                expect(observer.next).toBeCalledWith(2); // 1 (o3) + 1 (o2)
+                expect(observer.next).toHaveBeenCalledWith(2); // 1 (o3) + 1 (o2)
                 expect(counter).toEqual(4);
                 expect(isO2Subscribed).toBeTruthy(); // Subscribed again
             });
@@ -601,11 +601,11 @@ describe('autorun', () => {
                 });
                 sub = r.subscribe(observer);
 
-                expect(observer.next).not.toBeCalled();
+                expect(observer.next).not.toHaveBeenCalled();
                 expect(isO2Subscribed).toBeFalsy();
 
                 o3.next(4);
-                expect(observer.next).toBeCalledWith(6); // 4 (o3) + 1 (o2) + 1 (o2)
+                expect(observer.next).toHaveBeenCalledWith(6); // 4 (o3) + 1 (o2) + 1 (o2)
                 expect(isO2Subscribed).toBeTruthy();
 
                 // unsubscribes o3 so it needs to emit again later
@@ -702,13 +702,13 @@ describe('autorun', () => {
             sub = r.subscribe(observer);
 
             // Waiting for a value of o...
-            expect(observer.next).not.toBeCalled();
-            expect(observer.complete).not.toBeCalled();
+            expect(observer.next).not.toHaveBeenCalled();
+            expect(observer.complete).not.toHaveBeenCalled();
 
             // o receiving a value. Untracked so complete immediately
             o.next(3);
-            expect(observer.next).toBeCalledWith(3);
-            expect(observer.complete).toBeCalled();
+            expect(observer.next).toHaveBeenCalledWith(3);
+            expect(observer.complete).toHaveBeenCalled();
         });
 
         it('will eventually start listening for tracked dep', () => {
@@ -718,14 +718,14 @@ describe('autorun', () => {
             sub = r.subscribe(observer);
 
             // Waiting for a value of o... o2 not observed yet.
-            expect(observer.next).not.toBeCalled();
+            expect(observer.next).not.toHaveBeenCalled();
 
             // o receiving a value. Will listen to tracked o2 now.
             o.next(3);
-            expect(observer.next).toBeCalledWith(5); // 3 (o) + 2 (o2)
+            expect(observer.next).toHaveBeenCalledWith(5); // 3 (o) + 2 (o2)
 
             o2.next(1);
-            expect(observer.next).toBeCalledWith(4); // 3 (o) + 1 (o2)
+            expect(observer.next).toHaveBeenCalledWith(4); // 3 (o) + 1 (o2)
         });
 
         it('will only change on first value of untracked dep', () => {
@@ -735,19 +735,19 @@ describe('autorun', () => {
             sub = r.subscribe(observer);
 
             // Waiting for a value of o...
-            expect(observer.next).not.toBeCalled();
+            expect(observer.next).not.toHaveBeenCalled();
 
             // o receiving first value.
             o.next(3);
-            expect(observer.next).toBeCalledWith(5); // 3 (o) + 2 (o2)
+            expect(observer.next).toHaveBeenCalledWith(5); // 3 (o) + 2 (o2)
 
             // o receiving second value. But untracked so expression not called.
             o.next(4);
-            expect(observer.next).toBeCalledWith(5); // Not changed
+            expect(observer.next).toHaveBeenCalledWith(5); // Not changed
 
             // o2 receives new value. Will use changed value of o now too.
             o2.next(6);
-            expect(observer.next).toBeCalledWith(10); // 4 (o) + 6 (o2)
+            expect(observer.next).toHaveBeenCalledWith(10); // 4 (o) + 6 (o2)
         });
 
         it('will complete anyway when untracked value completes before it emits', () => {
@@ -755,12 +755,12 @@ describe('autorun', () => {
             const r = computed(() => _(o));
             sub = r.subscribe(observer);
 
-            expect(observer.next).not.toBeCalled();
-            expect(observer.complete).not.toBeCalled();
+            expect(observer.next).not.toHaveBeenCalled();
+            expect(observer.complete).not.toHaveBeenCalled();
 
             o.complete();
-            expect(observer.next).not.toBeCalled();
-            expect(observer.complete).toBeCalled();
+            expect(observer.next).not.toHaveBeenCalled();
+            expect(observer.complete).toHaveBeenCalled();
         });
 
         it('will not complete when untracked value completes before it emits when tracking other value', () => {
@@ -769,15 +769,15 @@ describe('autorun', () => {
             const r = computed(() => $(o2) + _(o));
             sub = r.subscribe(observer);
 
-            expect(observer.next).not.toBeCalled();
-            expect(observer.complete).not.toBeCalled();
+            expect(observer.next).not.toHaveBeenCalled();
+            expect(observer.complete).not.toHaveBeenCalled();
 
             // o completes before it emits.
             // expression will not complete yet because it might be that a new value of o2
             // will branch around o.
             o.complete();
-            expect(observer.next).not.toBeCalled();
-            expect(observer.complete).not.toBeCalled();
+            expect(observer.next).not.toHaveBeenCalled();
+            expect(observer.complete).not.toHaveBeenCalled();
         });
     });
 
